@@ -76,6 +76,10 @@ public class Campo {
         this.aberto = false;
     }
 
+    public void setAberto(boolean aberto) {
+        this.aberto = aberto;
+    }
+
     public void minar() {
         this.minado = true;
     }

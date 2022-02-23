@@ -1,5 +1,7 @@
 package br.com.campominado.modelo;
 
+import br.com.campominado.excecao.ExplosaoException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -22,10 +24,15 @@ public class Tabuleiro {
     }
 
     public void abrir(int linha, int coluna) {
-        campos.parallelStream()
-                .filter(c -> c.getLinha() == linha && c.getColuna() == coluna)
-                .findFirst()
-                .ifPresent(c -> c.abrir());
+        try {
+            campos.parallelStream()
+                    .filter(c -> c.getLinha() == linha && c.getColuna() == coluna)
+                    .findFirst()
+                    .ifPresent(c -> c.abrir());
+        } catch (ExplosaoException e) {
+            campos.stream().forEach(c -> c.setAberto(true));
+            throw e;
+        }
     }
 
     public void alternarMarcacao(int linha, int coluna) {
@@ -52,7 +59,7 @@ public class Tabuleiro {
     }
 
     private void sortearMinas() {
-        long minasArmadas = 0;
+        long minasArmadas = 1;
         Predicate<Campo> minado = c -> c.isMinado();
 
         do {
